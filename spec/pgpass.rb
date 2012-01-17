@@ -73,6 +73,7 @@ describe Pgpass do
   describe '::match' do
     def with_pgpass(relative_path)
       location = File.expand_path("../#{relative_path}", __FILE__)
+      File.chmod(0600, location)
       Pgpass::LOCATIONS.unshift(location)
       yield
     ensure
