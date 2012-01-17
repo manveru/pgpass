@@ -5,8 +5,8 @@ files.
 
 ## Example usage
 
-  entry = Pgpass.match(database: 'sample_db', user: 'manveru')
-  DB = Sequel.connect(entry.to_url)
+    entry = Pgpass.match(database: 'sample_db', user: 'manveru')
+    DB = Sequel.connect(entry.to_url)
 
 ## License
 
