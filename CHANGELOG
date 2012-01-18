@@ -1,3 +1,7 @@
+[11ba8ed | 2012-01-18 00:01:17 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * expand paths in LOCATION
+
 [aac70cc | 2012-01-17 16:37:58 UTC] Michael Fellinger <m.fellinger@gmail.com>
 
   * Fix permissions in the spec, git doesn't keep them
