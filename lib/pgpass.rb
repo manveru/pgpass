@@ -114,6 +114,7 @@ module Pgpass
     ).merge(given_options)
 
     LOCATIONS.compact.each do |path|
+      path = File.expand_path(path)
       # consider only files
       next unless File.file?(path)
       # that aren't world/group accessible
