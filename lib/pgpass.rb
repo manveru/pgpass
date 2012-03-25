@@ -118,7 +118,10 @@ module Pgpass
       # consider only files
       next unless File.file?(path)
       # that aren't world/group accessible
-      next unless File.stat(path).mode & 077 == 0
+      unless File.stat(path).mode & 077 == 0
+        warn("Ignoring group or world readable file #{path}. Set permissions to 0600 to use.")
+        next
+      end
 
       load_file(path).each do |entry|
         return entry.complement(search) if entry == search
