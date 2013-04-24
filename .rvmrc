@@ -1,2 +1,2 @@
-rvm --install --create use 1.9.3@pgpass
+rvm --install --create use 2.0.0@pgpass
 [[ -s .gems ]] && rvm gemset import .gems
