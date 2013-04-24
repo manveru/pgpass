@@ -62,7 +62,7 @@ module Pgpass
     end
 
     def to_hash
-      Hash[self.class.members.map{|m| self[m] }]
+      Hash[self.class.members.map{|m| [m, self[m]] }]
     end
 
     def merge(other)
