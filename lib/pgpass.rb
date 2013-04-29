@@ -119,7 +119,7 @@ module Pgpass
       next unless File.file?(path)
       # that aren't world/group accessible
       unless File.stat(path).mode & 077 == 0
-        warn("Ignoring group or world readable file #{path}. Set permissions to 0600 to use.")
+        warn %(WARNING: password file "#{path}" has group or world access; permissions should be u=rw (0600) or less)
         next
       end
 
