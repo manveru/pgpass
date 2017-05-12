@@ -62,7 +62,13 @@ module Pgpass
     end
 
     def to_hash
-      Hash[self.class.members.map{|m| [m, self[m]] }]
+      keys = Array.new
+      self.class.members.each { |m| keys.push m if !self[m].nil? }
+      keys_struct = Struct.new(*keys)
+      values = self.select { |v| !v.nil? }
+      struct_with_values = keys_struct.new(*values)
+      keys_and_values = struct_with_values.class.members.zip(values).to_h
+      return keys_and_values
     end
 
     def merge(other)
