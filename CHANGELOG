@@ -1,3 +1,31 @@
+[302ee50 | 2022-07-27 12:10:17 UTC] Michael Fellinger <michael.fellinger@iohk.io>
+
+  * fix some rubocop issues and a bug in Pgpass::guess
+
+[62a0dd9 | 2013-04-29 21:26:30 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * identical warning to pg utils
+
+[ff4d6dd | 2013-04-24 21:38:01 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * update to 2.0.0
+
+[67cf301 | 2013-04-24 21:37:52 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * fix weird to_hash behaviour
+
+[3e9b3c4 | 2012-03-25 11:01:12 UTC] Trey Dempsey <trey.dempsey@gmail.com>
+
+  * Adding warning for .pgpass permissions
+
+[e00b3ec | 2012-02-14 16:57:46 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * remove jruby and rbx from supported platforms
+
+[5ba2bd0 | 2012-01-18 00:01:36 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Version 2012.01.18
+
 [11ba8ed | 2012-01-18 00:01:17 UTC] Michael Fellinger <m.fellinger@gmail.com>
 
   * expand paths in LOCATION
