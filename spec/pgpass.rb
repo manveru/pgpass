@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'bacon'
 Bacon.summary_on_exit
 
@@ -50,7 +52,7 @@ describe Pgpass do
           port: 'bar:',
           database: ':d',
           username: 'u:',
-          password: 'p',
+          password: 'p'
         )
       ]
     end
@@ -64,7 +66,7 @@ describe Pgpass do
           port: 'bar\\',
           database: '\\d',
           username: 'u',
-          password: 'p',
+          password: 'p'
         )
       ]
     end
@@ -73,7 +75,7 @@ describe Pgpass do
   describe '::match' do
     def with_pgpass(relative_path)
       location = File.expand_path("../#{relative_path}", __FILE__)
-      File.chmod(0600, location)
+      File.chmod(0o600, location)
       Pgpass::LOCATIONS.unshift(location)
       yield
     ensure

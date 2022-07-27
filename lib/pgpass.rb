@@ -1,3 +1,9 @@
+# frozen_string_literal: true
+
+require 'strscan'
+require 'uri'
+require 'etc'
+
 # The file .pgpass in a user's home directory or the file referenced by
 # PGPASSFILE can contain passwords to be used if the connection requires a
 # password (and no password has been specified otherwise).
@@ -35,13 +41,8 @@
 #
 # On Microsoft Windows, it is assumed that the file is stored in a directory
 # that is secure, so no special permissions check is made.
-
-require 'strscan'
-require 'uri'
-require 'etc'
-
 module Pgpass
-  class Entry < Struct.new(:hostname, :port, :database, :username, :password)
+  Entry = Struct.new(:hostname, :port, :database, :username, :password) do
     def self.create(hash)
       new(*hash.values_at(*members))
     end
@@ -52,7 +53,7 @@ module Pgpass
     end
 
     def to_url
-      uri = URI("postgres:///")
+      uri = URI('postgres:///')
       uri.user = username || ENV['PGUSER'] || Etc.getlogin
       uri.password = password || ENV['PGPASSWORD']
       uri.host = hostname || ENV['PGHOST'] || 'localhost'
@@ -62,7 +63,7 @@ module Pgpass
     end
 
     def to_hash
-      Hash[self.class.members.map{|m| [m, self[m]] }]
+      Hash[self.class.members.map { |m| [m, self[m]] }]
     end
 
     def merge(other)
@@ -82,21 +83,21 @@ module Pgpass
         database: complement_one(database, other.database),
         username: complement_one(username, other.username),
         hostname: complement_one(hostname, other.hostname),
-        port:     complement_one(port,     other.port),
-        password: complement_one(password, other.password),
+        port: complement_one(port, other.port),
+        password: complement_one(password, other.password)
       )
     end
 
     private
 
     def compare(a, b)
-      b == nil || a == b || a == '*' || b == '*'
+      b.nil? || a == b || a == '*' || b == '*'
     end
 
     def complement_one(a, b)
       a = nil if a == '*'
       b = nil if b == '*'
-      a ? a : b
+      a || b
     end
   end
 
@@ -106,19 +107,20 @@ module Pgpass
 
   def match(given_options = {})
     search = Entry.create(
-      user:     (ENV['PGUSER'] || '*'),
+      user: (ENV['PGUSER'] || '*'),
       password: ENV['PGPASSWORD'],
-      host:     (ENV['PGHOST'] || '*'),
-      port:     (ENV['PGPORT'] || '*'),
-      database: (ENV['PGDATABASE'] || '*'),
+      host: (ENV['PGHOST'] || '*'),
+      port: (ENV['PGPORT'] || '*'),
+      database: (ENV['PGDATABASE'] || '*')
     ).merge(given_options)
 
     LOCATIONS.compact.each do |path|
       path = File.expand_path(path)
       # consider only files
       next unless File.file?(path)
+
       # that aren't world/group accessible
-      unless File.stat(path).mode & 077 == 0
+      unless (File.stat(path).mode & 0o077).zero?
         warn %(WARNING: password file "#{path}" has group or world access; permissions should be u=rw (0600) or less)
         next
       end
@@ -132,44 +134,36 @@ module Pgpass
   end
 
   def guess(paths = PATH)
-    PATH.each do |path|
+    paths.each do |path|
       begin
-        load_file(File.join(path, ".pgpass"))
-      rescue Errno::ENOENT => ex
-        warn(ex)
+        load_file(File.join(path, '.pgpass'))
+      rescue Errno::ENOENT => e
+        warn(e)
       end
     end
   end
 
   def load_file(path)
-    File.open(File.expand_path(path), 'r'){|io| load(io) }
+    File.open(File.expand_path(path), 'r') { |io| load(io) }
   end
 
   def load(io)
-    io.each_line.map{|line| parse_line(line) }
+    io.each_line.map { |line| parse_line(line) }
   end
 
   def parse_line(line)
     sc = StringScanner.new(line)
     entry = Entry.new
     key_index = 0
-    value = ''
+    value = []
 
     loop do
       pos = sc.pos
 
-      if sc.bol?
-        if sc.scan(/\s*#/)
-          # commented line
-          return
-        elsif sc.scan(/\s*$/)
-          # empty line
-          return
-        end
-      end
+      return if sc.bol? && (sc.scan(/\s*#/) || sc.scan(/\s*$/))
 
       if sc.eos?
-        entry[Entry.members[key_index]] = value
+        entry[Entry.members[key_index]] = value.join
         return entry # end of string
       end
 
@@ -178,21 +172,19 @@ module Pgpass
       elsif sc.scan(/\\\\/)
         value << '\\'
       elsif sc.scan(/:/)
-        entry[Entry.members[key_index]] = value
+        entry[Entry.members[key_index]] = value.join
         key_index += 1
-        value = ''
+        value = []
       elsif sc.scan(/\r\n|\r|\n/)
-        entry[Entry.members[key_index]] = value
+        entry[Entry.members[key_index]] = value.join
         return entry
       elsif sc.scan(/./)
         value << sc[0]
       end
 
-      if sc.pos == pos
-        raise "position didn't advance, stuck in parsing"
-      end
+      raise "position didn't advance, stuck in parsing" if sc.pos == pos
     end
 
-    return entry
+    entry
   end
 end

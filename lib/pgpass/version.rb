@@ -1,3 +1,3 @@
 module Pgpass
-  VERSION = "2012.01.18"
+  VERSION = "2022.07.27"
 end
