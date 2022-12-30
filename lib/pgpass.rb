@@ -107,9 +107,9 @@ module Pgpass
 
   def match(given_options = {})
     search = Entry.create(
-      user: (ENV['PGUSER'] || '*'),
+      username: (ENV['PGUSER'] || '*'),
       password: ENV['PGPASSWORD'],
-      host: (ENV['PGHOST'] || '*'),
+      hostname: (ENV['PGHOST'] || '*'),
       port: (ENV['PGPORT'] || '*'),
       database: (ENV['PGDATABASE'] || '*')
     ).merge(given_options)
