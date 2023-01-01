@@ -1,3 +1,30 @@
+[2c7394a | 2022-12-30 12:24:54 UTC] Jesús Gómez <jesus.gomez@fonemed.com>
+
+  * Fix typo in 'search' hash definition inside 'match' method
+
+    The hash used to create the `search` Entry use keys that will be
+    simply ignored by Entry's initializer: `host` and `user`.
+    
+    Instead, the keys `hostname` and `username` should be used.
+    
+    The current tests pass because `hostname` and `username` are set as
+    `nil` (because those keys were not actually passed, the keys passed
+    were `host` and `user`). Then, the private method `compare` will treat
+    those `nil` values the same as `*`.
+    
+    `*` would have been the value set to those keys, if no PG env variable
+    is set.
+    
+    The tests are not verifying the environment variables, so the tests
+    have been passing without problem.
+    
+    In any case, this commit fix this aparently evident typo (don't merge
+    if I'm missing something).
+
+[2c78ea0 | 2022-07-27 12:18:30 UTC] Michael Fellinger <michael.fellinger@iohk.io>
+
+  * Version 2022.07.27
+
 [302ee50 | 2022-07-27 12:10:17 UTC] Michael Fellinger <michael.fellinger@iohk.io>
 
   * fix some rubocop issues and a bug in Pgpass::guess
